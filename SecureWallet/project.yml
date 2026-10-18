@@ -1,0 +1,56 @@
+name: SecureWallet
+options:
+  bundleIdPrefix: com.suriya.securewallet
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  WalletCore:
+    # Trust Wallet Core: audited BIP39/BIP32/secp256k1/Keccak implementation.
+    # Pinned to an exact version; the binary targets are verified by checksum.
+    url: https://github.com/trustwallet/wallet-core
+    exactVersion: 4.8.4
+targets:
+  SecureWallet:
+    type: application
+    platform: iOS
+    sources:
+      - path: SecureWallet
+    dependencies:
+      - package: WalletCore
+        product: WalletCore
+      - package: WalletCore
+        product: WalletCoreSwiftProtobuf
+    info:
+      path: SecureWallet/Info.plist
+      properties:
+        CFBundleDisplayName: Secure Wallet
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSFaceIDUsageDescription: Face ID protects access to your wallet and authorizes every transaction.
+        ITSAppUsesNonExemptEncryption: false
+        # No ATS exceptions: every network call must use HTTPS.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.suriya.securewallet
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: false
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: GJMQYG8M85
+        ENABLE_TESTABILITY: NO
+      configs:
+        Debug:
+          ENABLE_TESTABILITY: YES
+  SecureWalletTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: SecureWalletTests
+    dependencies:
+      - target: SecureWallet
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
